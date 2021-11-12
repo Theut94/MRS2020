@@ -1,14 +1,11 @@
 package gui;
 
 import be.Movie;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -34,6 +31,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle)
     {
+
         lstMovies.setItems(movieModel.getObservableMovies());
 
         txtMovieSearch.textProperty().addListener((observableValue, oldValue, newValue) -> {

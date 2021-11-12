@@ -9,38 +9,15 @@ import java.util.List;
 public class MovieDAO implements IMovieDataAccess {
 
     private static final String MOVIES_FILE = "data/movie_titles.txt";
+    private List<Movie> allMovies;
 
+    public MovieDAO()
+    {
+        allMovies = new ArrayList<>();
 
+    }
 
     public List<Movie> getAllMovies() throws IOException {
-
-        return null;
-    }
-
-    @Override
-    public Movie createMovie(String title, int year) throws Exception {
-        return null;
-    }
-
-    @Override
-    public void updateMovie(Movie movie) throws Exception {
-
-    }
-
-    @Override
-    public void deleteMovie(Movie movie) throws Exception {
-
-    }
-
-
-
-
-
-
-    /*
-    public List<Movie> getAllMovies() {
-        List<Movie> allMovieList = new ArrayList<>();
-
         File moviesFile = new File(MOVIES_FILE);
 
 
@@ -63,8 +40,8 @@ public class MovieDAO implements IMovieDataAccess {
                             title += "," + separatedLine[i];
                         }
                     }
-                    Movie movie = new Movie(id, title, year);
-                    allMovieList.add(movie);
+                    Movie movie = new Movie(id, year, title);
+                    allMovies.add(movie);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -72,9 +49,31 @@ public class MovieDAO implements IMovieDataAccess {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return allMovieList;
+        return allMovies;
     }
-    */
 
+    @Override
+    public Movie createMovie(String title, int year) throws Exception {
+
+        int i = allMovies.size();
+        Movie m =  new Movie(i, year, title);
+        allMovies.add(m);
+        return m;
+    }
+
+    @Override
+    public void updateMovie(Movie movie) throws Exception {
+        for (Movie m : allMovies)
+        {
+            if(m.getId() == movie.getId())
+                m = movie;
+        }
+    }
+
+    @Override
+    public void deleteMovie(Movie movie) throws Exception
+    {
+        allMovies.remove(movie);
+    }
 
 }

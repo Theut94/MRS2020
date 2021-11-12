@@ -4,7 +4,6 @@ import be.Movie;
 import bll.util.MovieSearcher;
 import dal.IMovieDataAccess;
 import dal.MovieDAO;
-import dal.MovieDAO_Mock;
 
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class MovieManager {
     private IMovieDataAccess movieDAO;
 
     public MovieManager() {
-        movieDAO = new MovieDAO_Mock();
+        movieDAO = new MovieDAO();
     }
 
     public List<Movie> getAllMovies() throws Exception {

@@ -25,16 +25,24 @@ public class MovieDAO_Mock implements IMovieDataAccess {
 
     @Override
     public Movie createMovie(String title, int year) throws Exception {
-        return null;
+
+        int i = allMovies.size();
+        Movie m =  new Movie(i, year, title);
+        allMovies.add(m);
+        return m;
     }
 
     @Override
-    public void updateMovie(Movie movie) throws Exception {
+    public void updateMovie(Movie movie) throws Exception
+    {
+
+
 
     }
 
     @Override
     public void deleteMovie(Movie movie) throws Exception {
+        allMovies.remove(movie);
 
     }
 

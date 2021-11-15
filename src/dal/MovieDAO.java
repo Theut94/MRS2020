@@ -17,6 +17,14 @@ public class MovieDAO implements IMovieDataAccess {
 
     }
 
+    public static void main(String[] args) throws Exception
+    {
+        MovieDAO movieDAO = new MovieDAO();
+        movieDAO.getAllMovies();
+        Movie movie = new Movie(17774,2015,"Django Unchained");
+        movieDAO.deleteMovie(movie);
+    }
+
     public List<Movie> getAllMovies() throws IOException {
         File moviesFile = new File(MOVIES_FILE);
 
@@ -54,26 +62,53 @@ public class MovieDAO implements IMovieDataAccess {
 
     @Override
     public Movie createMovie(String title, int year) throws Exception {
-
-        int i = allMovies.size();
-        Movie m =  new Movie(i, year, title);
-        allMovies.add(m);
-        return m;
+        try(FileWriter writer = new FileWriter(MOVIES_FILE, true);
+            BufferedWriter bw = new BufferedWriter(writer))
+        {
+            int i = allMovies.get(allMovies.size()-1).getId()+1;
+            Movie m =  new Movie(i, year, title);
+            bw.append(i + "," + year + "," + title);
+            bw.newLine();
+            allMovies.add(m);
+            return m;
+        }
     }
 
     @Override
     public void updateMovie(Movie movie) throws Exception {
-        for (Movie m : allMovies)
-        {
-            if(m.getId() == movie.getId())
-                m = movie;
-        }
+         File moviesFile = new File(MOVIES_FILE);
+         File tempFile = new File ("TempFile.txt");
+            BufferedReader br = new BufferedReader(new FileReader(moviesFile));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile, true));
+
+            String currentLine;
+            String lineToUpdate = movie.getId() + "," + movie.getYear() + "," + getClass().getName();
+            while((currentLine = br.readLine()) !=null)
+            {
+                if(currentLine.equals(lineToUpdate))bw.write(movie.getId()+","+movie.getYear()+","+movie.getTitle());
+                bw.write(currentLine + System.getProperty("line.separator"));
+
+            }
+            tempFile.renameTo(moviesFile);
+
     }
 
     @Override
     public void deleteMovie(Movie movie) throws Exception
     {
-        allMovies.remove(movie);
+        File moviesFile = new File(MOVIES_FILE);
+        File tempFile = new File("tempFile.txt");
+        BufferedReader br = new BufferedReader(new FileReader(moviesFile));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile, true));
+
+        String currentLine;
+        String lineToRemove = movie.getId() + "," + movie.getYear() + "," + getClass().getName();
+        while((currentLine = br.readLine()) !=null)
+        {
+         if(currentLine.equals(lineToRemove)) continue;
+         bw.write(currentLine + System.getProperty("line.seperator"));
+        }
+        tempFile.renameTo(moviesFile);
     }
 
 }

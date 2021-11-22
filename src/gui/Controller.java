@@ -1,8 +1,10 @@
 package gui;
 
 import be.Movie;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
@@ -14,6 +16,11 @@ public class Controller implements Initializable {
 
     public TextField txtMovieSearch;
     public ListView<Movie> lstMovies;
+    public Button crtButton;
+    public Button dltButton;
+    public Button updButton;
+    public TextField nameTxt;
+    public TextField yearTxt;
 
     private MovieModel movieModel;
 
@@ -26,6 +33,7 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
     }
+
 
 
     @Override
@@ -54,5 +62,24 @@ public class Controller implements Initializable {
     }
 
 
+    public void dltButton(ActionEvent actionEvent) throws Exception {
 
+        movieModel.deleteMovie(lstMovies.getSelectionModel().getSelectedItem());
+
+    }
+
+    public void crtButton(ActionEvent actionEvent) throws Exception {
+        String name =nameTxt.getText();
+        int year = Integer.parseInt(yearTxt.getText());
+        movieModel.createMovie(name,year);
+    }
+
+    public void updButton(ActionEvent actionEvent) throws Exception {
+        int id = lstMovies.getSelectionModel().getSelectedItem().getId();
+        int year = Integer.parseInt(yearTxt.getText());
+        String name = nameTxt.getText();
+        Movie movie = new Movie(id, year, name);
+        movieModel.updateMovie(movie);
+
+    }
 }

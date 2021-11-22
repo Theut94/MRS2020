@@ -11,17 +11,15 @@ public class MovieDAO implements IMovieDataAccess {
     private static final String MOVIES_FILE = "data/movie_titles.txt";
     private List<Movie> allMovies;
 
-    public MovieDAO()
-    {
+    public MovieDAO() {
         allMovies = new ArrayList<>();
 
     }
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         MovieDAO movieDAO = new MovieDAO();
         movieDAO.getAllMovies();
-        Movie movie = new Movie(17774,2015,"Django Unchained");
+        Movie movie = new Movie(17774, 2015, "Django Unchained");
         movieDAO.deleteMovie(movie);
     }
 
@@ -34,17 +32,14 @@ public class MovieDAO implements IMovieDataAccess {
             while (hasLines) {
                 String line = bufferedReader.readLine();
                 hasLines = (line != null);
-                if (hasLines && !line.isBlank())
-                {
+                if (hasLines && !line.isBlank()) {
                     String[] separatedLine = line.split(",");
 
                     int id = Integer.parseInt(separatedLine[0]);
                     int year = Integer.parseInt(separatedLine[1]);
                     String title = separatedLine[2];
-                    if(separatedLine.length > 3)
-                    {
-                        for(int i = 3; i < separatedLine.length; i++)
-                        {
+                    if (separatedLine.length > 3) {
+                        for (int i = 3; i < separatedLine.length; i++) {
                             title += "," + separatedLine[i];
                         }
                     }
@@ -62,11 +57,10 @@ public class MovieDAO implements IMovieDataAccess {
 
     @Override
     public Movie createMovie(String title, int year) throws Exception {
-        try(FileWriter writer = new FileWriter(MOVIES_FILE, true);
-            BufferedWriter bw = new BufferedWriter(writer))
-        {
-            int i = allMovies.get(allMovies.size()-1).getId()+1;
-            Movie m =  new Movie(i, year, title);
+        try (FileWriter writer = new FileWriter(MOVIES_FILE, true);
+             BufferedWriter bw = new BufferedWriter(writer)) {
+            int i = allMovies.get(allMovies.size() - 1).getId() + 1;
+            Movie m = new Movie(i, year, title);
             bw.append(i + "," + year + "," + title);
             bw.newLine();
             allMovies.add(m);
@@ -76,20 +70,22 @@ public class MovieDAO implements IMovieDataAccess {
 
     @Override
     public void updateMovie(Movie movie) throws Exception {
-         File moviesFile = new File(MOVIES_FILE);
-         File tempFile = new File ("TempFile.txt");
-            BufferedReader br = new BufferedReader(new FileReader(moviesFile));
-            BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile, true));
 
-            String currentLine;
-            String lineToUpdate = movie.getId() + "," + movie.getYear() + "," + getClass().getName();
-            while((currentLine = br.readLine()) !=null)
+        File moviesFile = new File(MOVIES_FILE);
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(moviesFile))){
+
+        for(Movie m : getAllMovies())
+            if(movie.getId() == m.getId())
             {
-                if(currentLine.equals(lineToUpdate))bw.write(movie.getId()+","+movie.getYear()+","+movie.getTitle());
-                bw.write(currentLine + System.getProperty("line.separator"));
-
+                bw.write(movie.getId() + "," + movie.getYear() + "," + movie.getTitle());
+                bw.newLine();
             }
-            tempFile.renameTo(moviesFile);
+            else
+            {
+                bw.write(m.getId() + "," + m.getYear() + "," + m.getTitle());
+                bw.newLine();
+            }}
+
 
     }
 
@@ -97,18 +93,18 @@ public class MovieDAO implements IMovieDataAccess {
     public void deleteMovie(Movie movie) throws Exception
     {
         File moviesFile = new File(MOVIES_FILE);
-        File tempFile = new File("tempFile.txt");
-        BufferedReader br = new BufferedReader(new FileReader(moviesFile));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile, true));
+       try (BufferedWriter bw = new BufferedWriter(new FileWriter(moviesFile)))
+       {
+            for (Movie m : getAllMovies()) {
+                if (m.getId() == movie.getId())
+                    System.out.println("this happened");
 
-        String currentLine;
-        String lineToRemove = movie.getId() + "," + movie.getYear() + "," + getClass().getName();
-        while((currentLine = br.readLine()) !=null)
-        {
-         if(currentLine.equals(lineToRemove)) continue;
-         bw.write(currentLine + System.getProperty("line.seperator"));
-        }
-        tempFile.renameTo(moviesFile);
+                else {
+                    bw.write(m.getId() + "," + m.getYear() + "," + m.getTitle());
+                    bw.newLine();
+                }
+            }
+       }
     }
-
 }
+

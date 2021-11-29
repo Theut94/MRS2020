@@ -3,7 +3,7 @@ package bll;
 import be.Movie;
 import bll.util.MovieSearcher;
 import dal.IMovieDataAccess;
-import dal.MovieDAO;
+import dal.db.MovieDAO_DB;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class MovieManager {
     private IMovieDataAccess movieDAO;
 
     public MovieManager() {
-        movieDAO = new MovieDAO();
+        movieDAO = new MovieDAO_DB();
     }
 
     public List<Movie> getAllMovies() throws Exception {
